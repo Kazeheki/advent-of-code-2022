@@ -4,7 +4,7 @@ This repository contains my solutions to the [advent of code of 2022](https://ad
 
 ## Developer setup
 
-This year the solutions are written in [Rust](https://www.rust-lang.org).
+This year, I've written the solutions in [Rust](https://www.rust-lang.org).
 
 To run a solution use the following command:
 
