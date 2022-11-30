@@ -24,6 +24,7 @@ mod day21;
 mod day22;
 mod day23;
 mod day24;
+mod day25;
 
 pub fn delegate_problem1(day: u8) -> Result<String, String> {
     match day {
@@ -51,6 +52,7 @@ pub fn delegate_problem1(day: u8) -> Result<String, String> {
         22 => day22::problem1(),
         23 => day23::problem1(),
         24 => day24::problem1(),
+        25 => day25::problem1(),
         _ => Err("Invalid day".to_string()),
     }
 }
@@ -81,6 +83,7 @@ pub fn delegate_problem2(day: u8) -> Result<String, String> {
         22 => day22::problem2(),
         23 => day23::problem2(),
         24 => day24::problem2(),
+        25 => day25::problem2(),
         _ => Err("Invalid day".to_string()),
     }
 }
