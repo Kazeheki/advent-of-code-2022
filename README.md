@@ -1,6 +1,6 @@
 # :christmas_tree: Advent of Code 2022
 
-This repository contains my solutions to the advent of code of 2022.
+This repository contains my solutions to the [advent of code of 2022](https://adventofcode.com/2022).
 
 ## Developer setup
 
