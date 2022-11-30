@@ -1,6 +1,8 @@
 use clap::Parser;
 use colored::Colorize;
 
+mod days;
+
 #[derive(clap::Parser)]
 struct Args {
     #[arg(short, long)]
@@ -22,22 +24,22 @@ fn main() {
 
     let result = match arguments.mode {
         Mode::ALL => {
-            let result1 = run_problem1(arguments.day);
-            let result2 = run_problem2(arguments.day);
+            let result1 = problem1(arguments.day);
+            let result2 = problem2(arguments.day);
             result1.and(result2)
         }
-        Mode::PROBLEM1 => run_problem1(arguments.day),
-        Mode::PROBLEM2 => run_problem2(arguments.day),
+        Mode::PROBLEM1 => problem1(arguments.day),
+        Mode::PROBLEM2 => problem2(arguments.day),
     };
 
     if result.is_err() {
         eprintln!("Error: {}", result.err().unwrap().bold().red());
     } else {
-        println!("{}", "SUCCESS".green());
+        println!("Result: {}", result.unwrap().green());
     }
 }
 
-fn run_problem1(day: u8) -> Result<(), String> {
+fn problem1(day: u8) -> Result<String, String> {
     match day {
         d if d <= 0 => return Err("Invalid day, please use a value between 01 and 24".to_string()),
         d if d > 24 => return Err("Invalid day, please use a value between 01 and 24".to_string()),
@@ -45,12 +47,12 @@ fn run_problem1(day: u8) -> Result<(), String> {
             if !day_exists(day) {
                 return Err("Day has no input yet".to_string());
             }
-            Ok(())
+            days::delegate_problem1(day)
         }
     }
 }
 
-fn run_problem2(day: u8) -> Result<(), String> {
+fn problem2(day: u8) -> Result<String, String> {
     match day {
         d if d <= 0 => return Err("Invalid day, please use a value between 01 and 24".to_string()),
         d if d > 24 => return Err("Invalid day, please use a value between 01 and 24".to_string()),
@@ -58,7 +60,7 @@ fn run_problem2(day: u8) -> Result<(), String> {
             if !day_exists(day) {
                 return Err("Day has no input yet".to_string());
             }
-            Ok(())
+            days::delegate_problem2(day)
         }
     }
 }
