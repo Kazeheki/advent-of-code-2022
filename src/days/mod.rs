@@ -1,3 +1,5 @@
+use std::{fs::File, io::BufReader};
+
 mod day01;
 mod day02;
 mod day03;
@@ -81,4 +83,9 @@ pub fn delegate_problem2(day: u8) -> Result<String, String> {
         24 => day24::problem2(),
         _ => Err("Invalid day".to_string()),
     }
+}
+
+fn read_file_to_buffer(path: String) -> BufReader<File> {
+    let file = File::open(path).expect("file does not exist");
+    BufReader::new(file)
 }
