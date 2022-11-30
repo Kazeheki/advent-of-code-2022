@@ -9,7 +9,7 @@ This year the solutions are written in [Rust](https://www.rust-lang.org).
 To run a solution use the following command:
 
 ```bash
-cargo run -- [day]
+cargo run -- --day [day number]
 ```
 
 The daily input I got is stored in the folder [input](input). If you want to try the solutions with your input, simply switch out the contents of the file in that folder.
