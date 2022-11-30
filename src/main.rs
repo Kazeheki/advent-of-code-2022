@@ -1,4 +1,5 @@
 use clap::Parser;
+use colored::Colorize;
 
 #[derive(clap::Parser)]
 struct Args {
@@ -30,24 +31,36 @@ fn main() {
     };
 
     if result.is_err() {
-        eprintln!("Error: {}", result.err().unwrap());
+        eprintln!("Error: {}", result.err().unwrap().bold().red());
     } else {
-        println!("[[SUCCESS]]");
+        println!("{}", "SUCCESS".green());
     }
 }
 
 fn run_problem1(day: u8) -> Result<(), String> {
-    if !day_exists(day) {
-        return Err("Day has no input yet".to_string());
+    match day {
+        d if d <= 0 => return Err("Invalid day, please use a value between 01 and 24".to_string()),
+        d if d > 24 => return Err("Invalid day, please use a value between 01 and 24".to_string()),
+        _ => {
+            if !day_exists(day) {
+                return Err("Day has no input yet".to_string());
+            }
+            Ok(())
+        }
     }
-    Ok(())
 }
 
 fn run_problem2(day: u8) -> Result<(), String> {
-    if !day_exists(day) {
-        return Err("Day has no input yet".to_string());
+    match day {
+        d if d <= 0 => return Err("Invalid day, please use a value between 01 and 24".to_string()),
+        d if d > 24 => return Err("Invalid day, please use a value between 01 and 24".to_string()),
+        _ => {
+            if !day_exists(day) {
+                return Err("Day has no input yet".to_string());
+            }
+            Ok(())
+        }
     }
-    Ok(())
 }
 
 fn day_exists(day: u8) -> bool {
