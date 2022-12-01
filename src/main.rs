@@ -22,20 +22,26 @@ enum Mode {
 fn main() {
     let arguments = Args::parse();
 
-    let result = match arguments.mode {
+    let mut results: Vec<Result<String, String>> = vec![];
+
+    match arguments.mode {
         Mode::ALL => {
             let result1 = problem1(arguments.day);
             let result2 = problem2(arguments.day);
-            result1.and(result2)
+            results.push(result1);
+            results.push(result2);
         }
-        Mode::PROBLEM1 => problem1(arguments.day),
-        Mode::PROBLEM2 => problem2(arguments.day),
+        Mode::PROBLEM1 => results.push(problem1(arguments.day)),
+        Mode::PROBLEM2 => results.push(problem2(arguments.day)),
     };
 
-    if result.is_err() {
-        eprintln!("Error: {}", result.err().unwrap().bold().red());
-    } else {
-        println!("Result: {}", result.unwrap().green());
+    for (idx, result) in results.iter().enumerate() {
+        println!("{} {}", "Part".yellow(), (idx + 1).to_string().yellow());
+        if result.is_err() {
+            eprintln!("Error: {}", result.as_ref().err().unwrap().bold().red());
+        } else {
+            println!("Result: {}", result.as_ref().unwrap().green());
+        }
     }
 }
 
