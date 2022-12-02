@@ -19,7 +19,7 @@ The input files have to follow the format: `dd.txt`. So the first of December wo
 ## Todo
 
 - [x] 01.12.2022
-- [ ] 02.12.2022
+- [x] 02.12.2022
 - [ ] 03.12.2022
 - [ ] 04.12.2022
 - [ ] 05.12.2022
