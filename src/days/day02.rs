@@ -3,11 +3,18 @@ use std::{
     io::{BufRead, BufReader},
 };
 
-#[derive(Clone, PartialEq)]
+#[derive(PartialEq)]
 enum Choice {
     Rock,
     Paper,
     Scissors,
+}
+
+#[derive(PartialEq)]
+enum Context {
+    NeedsToLoose,
+    NeedsToDraw,
+    NeedsToWin,
 }
 
 pub fn problem1(buffer: BufReader<File>) -> Result<String, String> {
@@ -29,7 +36,7 @@ fn get_score(buffer: BufReader<File>, context_aware_choice: bool) -> u32 {
 
         let opponent_choice = transform_input_to_choice(other);
         let my_choice = if context_aware_choice {
-            transform_context_aware_to_choice(&opponent_choice, me)
+            transform_context_aware_to_choice(&opponent_choice, &transform_input_to_context(me))
         } else {
             transform_input_to_choice(me)
         };
@@ -42,6 +49,15 @@ fn get_score(buffer: BufReader<File>, context_aware_choice: bool) -> u32 {
     score
 }
 
+fn transform_input_to_context(input: &str) -> Context {
+    match input {
+        "X" => Context::NeedsToLoose,
+        "Y" => Context::NeedsToDraw,
+        "Z" => Context::NeedsToWin,
+        _ => panic!("Unknown input"),
+    }
+}
+
 fn transform_input_to_choice(input: &str) -> Choice {
     match input {
         "A" | "X" => Choice::Rock,
@@ -51,41 +67,23 @@ fn transform_input_to_choice(input: &str) -> Choice {
     }
 }
 
-fn transform_context_aware_to_choice(opponent_choice: &Choice, input: &str) -> Choice {
+fn transform_context_aware_to_choice(opponent_choice: &Choice, context: &Context) -> Choice {
     match opponent_choice {
-        Choice::Rock => {
-            if input == "X" {
-                Choice::Scissors
-            } else if input == "Y" {
-                opponent_choice.clone()
-            } else if input == "Z" {
-                Choice::Paper
-            } else {
-                panic!("unknown input")
-            }
-        }
-        Choice::Paper => {
-            if input == "X" {
-                Choice::Rock
-            } else if input == "Y" {
-                opponent_choice.clone()
-            } else if input == "Z" {
-                Choice::Scissors
-            } else {
-                panic!("unknown input")
-            }
-        }
-        Choice::Scissors => {
-            if input == "X" {
-                Choice::Paper
-            } else if input == "Y" {
-                opponent_choice.clone()
-            } else if input == "Z" {
-                Choice::Rock
-            } else {
-                panic!("unknown input")
-            }
-        }
+        Choice::Rock => match context {
+            Context::NeedsToLoose => Choice::Scissors,
+            Context::NeedsToDraw => Choice::Rock,
+            Context::NeedsToWin => Choice::Paper,
+        },
+        Choice::Paper => match context {
+            Context::NeedsToLoose => Choice::Rock,
+            Context::NeedsToDraw => Choice::Paper,
+            Context::NeedsToWin => Choice::Scissors,
+        },
+        Choice::Scissors => match context {
+            Context::NeedsToLoose => Choice::Paper,
+            Context::NeedsToDraw => Choice::Scissors,
+            Context::NeedsToWin => Choice::Rock,
+        },
     }
 }
 
