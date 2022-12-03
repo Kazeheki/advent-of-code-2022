@@ -26,64 +26,43 @@ pub fn problem2(buffer: BufReader<File>) -> Result<String, String> {
     Ok(sum.to_string())
 }
 
+fn unique_chars(input: &str) -> Vec<char> {
+    let mut chars: Vec<char> = input.chars().collect();
+    chars.sort();
+    chars.dedup();
+    chars
+}
+
+fn get_same_chars_in_both(a: &Vec<char>, b: &Vec<char>) -> Vec<char> {
+    let bigger = if a.len() > b.len() { a } else { b };
+    let smaller = if a.len() > b.len() { b } else { a };
+
+    let mut same: Vec<char> = Vec::new();
+    for c in bigger {
+        if smaller.contains(c) {
+            same.push(*c);
+        }
+    }
+    same
+}
+
 fn find_shared_item(rucksack: &str) -> char {
     let size = rucksack.len();
     let (left, right) = rucksack.split_at(size / 2);
-    let mut left = left.chars().collect::<Vec<char>>();
-    left.sort();
-    left.dedup();
-    let mut right = right.chars().collect::<Vec<char>>();
-    right.sort();
-    right.dedup();
+    let left = unique_chars(left);
+    let right = unique_chars(right);
 
-    if left.len() > right.len() {
-        for c in left {
-            if right.contains(&c) {
-                return c;
-            }
-        }
-    } else {
-        for c in right {
-            if left.contains(&c) {
-                return c;
-            }
-        }
-    }
-    unreachable!("There must be at one that is the same in each compartment");
+    let same = get_same_chars_in_both(&left, &right);
+    same[0]
 }
 
 fn find_group_item(rucksacks: &Vec<String>) -> char {
-    let mut r1: Vec<char> = rucksacks[0].chars().collect();
-    r1.sort();
-    r1.dedup();
-    let mut r2: Vec<char> = rucksacks[1].chars().collect();
-    r2.sort();
-    r2.dedup();
-    let mut r3: Vec<char> = rucksacks[2].chars().collect();
-    r3.sort();
-    r3.dedup();
+    let r1 = unique_chars(rucksacks[0].as_str());
+    let r2 = unique_chars(rucksacks[1].as_str());
+    let r3 = unique_chars(rucksacks[2].as_str());
 
-    let mut same_in_1_and_2 = Vec::new();
-    if r1.len() > r2.len() {
-        for c in r1 {
-            if r2.contains(&c) {
-                same_in_1_and_2.push(c);
-            }
-        }
-    } else {
-        for c in r2 {
-            if r1.contains(&c) {
-                same_in_1_and_2.push(c);
-            }
-        }
-    }
-
-    for c in r3 {
-        if same_in_1_and_2.contains(&c) {
-            return c;
-        }
-    }
-    unreachable!("there must be on same");
+    let same_in_r1_and_r2 = get_same_chars_in_both(&r1, &r2);
+    get_same_chars_in_both(&same_in_r1_and_r2, &r3)[0]
 }
 
 fn char_to_priority(c: char) -> u8 {
