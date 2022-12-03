@@ -12,8 +12,18 @@ pub fn problem1(buffer: BufReader<File>) -> Result<String, String> {
     Ok(sum.to_string())
 }
 
-pub fn problem2(_buffer: BufReader<File>) -> Result<String, String> {
-    Err("Not implemented".to_string())
+pub fn problem2(buffer: BufReader<File>) -> Result<String, String> {
+    let mut sum: u32 = 0;
+    let mut rucksacks: Vec<String> = Vec::new();
+    for line_result in buffer.lines() {
+        let line = line_result.unwrap();
+        rucksacks.push(line);
+        if rucksacks.len() == 3 {
+            sum += u32::from(char_to_priority(find_group_item(&rucksacks)));
+            rucksacks.clear();
+        }
+    }
+    Ok(sum.to_string())
 }
 
 fn find_shared_item(rucksack: &str) -> char {
@@ -42,6 +52,40 @@ fn find_shared_item(rucksack: &str) -> char {
     unreachable!("There must be at one that is the same in each compartment");
 }
 
+fn find_group_item(rucksacks: &Vec<String>) -> char {
+    let mut r1: Vec<char> = rucksacks[0].chars().collect();
+    r1.sort();
+    r1.dedup();
+    let mut r2: Vec<char> = rucksacks[1].chars().collect();
+    r2.sort();
+    r2.dedup();
+    let mut r3: Vec<char> = rucksacks[2].chars().collect();
+    r3.sort();
+    r3.dedup();
+
+    let mut same_in_1_and_2 = Vec::new();
+    if r1.len() > r2.len() {
+        for c in r1 {
+            if r2.contains(&c) {
+                same_in_1_and_2.push(c);
+            }
+        }
+    } else {
+        for c in r2 {
+            if r1.contains(&c) {
+                same_in_1_and_2.push(c);
+            }
+        }
+    }
+
+    for c in r3 {
+        if same_in_1_and_2.contains(&c) {
+            return c;
+        }
+    }
+    unreachable!("there must be on same");
+}
+
 fn char_to_priority(c: char) -> u8 {
     if c.is_lowercase() {
         (c as u8) - (char::from('a') as u8) + 1
@@ -65,5 +109,18 @@ mod tests {
             result.unwrap_err()
         );
         assert_eq!(result.unwrap(), "157")
+    }
+
+    #[test]
+    fn day03_part2() {
+        let path = "src/days/test-input/day03-example.txt".to_string();
+        let buffer = read_file_to_buffer(path);
+        let result = super::problem2(buffer);
+        assert!(
+            result.is_ok(),
+            "Problem returned error: {}",
+            result.unwrap_err()
+        );
+        assert_eq!(result.unwrap(), "70")
     }
 }
