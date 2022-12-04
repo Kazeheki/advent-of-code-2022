@@ -1,18 +1,11 @@
 use std::{
+    cmp,
     fs::File,
     io::{BufRead, BufReader},
 };
 
 pub fn problem1(buffer: BufReader<File>) -> Result<String, String> {
-    let mut sections: Vec<(Section, Section)> = vec![];
-    for line_result in buffer.lines() {
-        let line = line_result.unwrap();
-        let section_pair = line
-            .split(",")
-            .map(|s| Section::from(s))
-            .collect::<Vec<Section>>();
-        sections.push((section_pair[0], section_pair[1]));
-    }
+    let sections = create_pairs(buffer);
     let count = sections
         .iter()
         .map(|pair| {
@@ -24,8 +17,30 @@ pub fn problem1(buffer: BufReader<File>) -> Result<String, String> {
     Ok(count.to_string())
 }
 
-pub fn problem2(_buffer: BufReader<File>) -> Result<String, String> {
-    Err("Not implemented".to_string())
+pub fn problem2(buffer: BufReader<File>) -> Result<String, String> {
+    let sections = create_pairs(buffer);
+    let count = sections
+        .iter()
+        .map(|pair| {
+            let (a, b) = pair;
+            cmp::max(a.min, b.min) <= cmp::min(a.max, b.max)
+        })
+        .filter(|b| *b)
+        .count();
+    Ok(count.to_string())
+}
+
+fn create_pairs(buffer: BufReader<File>) -> Vec<(Section, Section)> {
+    let mut sections: Vec<(Section, Section)> = vec![];
+    for line_result in buffer.lines() {
+        let line = line_result.unwrap();
+        let section_pair = line
+            .split(",")
+            .map(|s| Section::from(s))
+            .collect::<Vec<Section>>();
+        sections.push((section_pair[0], section_pair[1]));
+    }
+    sections
 }
 
 #[derive(Clone, Copy)]
@@ -64,18 +79,17 @@ mod tests {
         assert_eq!(result.unwrap(), "2")
     }
 
-    // #[test]
+    #[test]
     #[allow(dead_code)]
     fn day04_part2() {
-        unimplemented!("no part 2 yet");
-        // let path = "src/days/test-input/day04-example.txt".to_string();
-        // let buffer = read_file_to_buffer(path);
-        // let result = super::problem2(buffer);
-        // assert!(
-        //     result.is_ok(),
-        //     "Problem returned error: {}",
-        //     result.unwrap_err()
-        // );
-        // assert_eq!(result.unwrap(), "")
+        let path = "src/days/test-input/day04-example.txt".to_string();
+        let buffer = read_file_to_buffer(path);
+        let result = super::problem2(buffer);
+        assert!(
+            result.is_ok(),
+            "Problem returned error: {}",
+            result.unwrap_err()
+        );
+        assert_eq!(result.unwrap(), "4")
     }
 }
