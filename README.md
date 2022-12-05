@@ -6,6 +6,8 @@ This repository contains my solutions to the [advent of code of 2022](https://ad
 
 This year, I've written the solutions in [Rust](https://www.rust-lang.org).
 
+:warning: I'm using AoC to learn Rust. My solutions might be unnecessarily complicated.
+
 To run a solution use the following command:
 
 ```bash
