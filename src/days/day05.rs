@@ -20,14 +20,31 @@ pub fn problem1(buffer: BufReader<File>) -> Result<String, String> {
         .map(|x| x.parse::<Move>().unwrap())
         .collect::<Vec<_>>();
     crane.add_moves(moves);
-    crane.execute_moves();
+    crane.execute_moves_9000();
     let top_boxes: Vec<char> = crane.top_boxes();
 
     Ok(top_boxes.iter().collect::<String>())
 }
 
-pub fn problem2(_buffer: BufReader<File>) -> Result<String, String> {
-    Err("Not implemented".to_string())
+pub fn problem2(buffer: BufReader<File>) -> Result<String, String> {
+    let file = buffer
+        .lines()
+        .into_iter()
+        .map(|s| s.unwrap().to_string() + "\n")
+        .collect::<String>();
+
+    let (crane, actions) = file.split_once("\n\n").unwrap();
+
+    let mut crane: Crane = crane.parse::<Crane>().unwrap();
+    let moves: Vec<Move> = actions
+        .lines()
+        .map(|x| x.parse::<Move>().unwrap())
+        .collect::<Vec<_>>();
+    crane.add_moves(moves);
+    crane.execute_moves_9001();
+    let top_boxes: Vec<char> = crane.top_boxes();
+
+    Ok(top_boxes.iter().collect::<String>())
 }
 
 struct Crane {
@@ -141,7 +158,7 @@ impl Crane {
         self.moves = moves;
     }
 
-    fn execute_moves(&mut self) {
+    fn execute_moves_9000(&mut self) {
         self.moves.iter().for_each(|m| {
             let (amount, from_idx, to_idx) = (m.amount, m.from, m.to);
             for _ in 0..amount {
@@ -151,6 +168,20 @@ impl Crane {
                 self.stacks[from_idx - 1] = from;
                 self.stacks[to_idx - 1] = to;
             }
+        });
+    }
+
+    fn execute_moves_9001(&mut self) {
+        self.moves.iter().for_each(|m| {
+            let (amount, from_idx, to_idx) = (m.amount, m.from, m.to);
+            let mut from = self.stacks[from_idx - 1].to_owned();
+            let mut to = self.stacks[to_idx - 1].to_owned();
+
+            let tail = from.split_off(from.len() - amount);
+            tail.iter().for_each(|x| to.push(x.to_owned()));
+
+            self.stacks[from_idx - 1] = from;
+            self.stacks[to_idx - 1] = to;
         });
     }
 
@@ -180,7 +211,7 @@ mod tests {
         assert_eq!(result.unwrap(), "CMZ");
     }
 
-    #[allow(dead_code)]
+    #[test]
     fn day05_part2() {
         let path = "src/days/test-input/day05-example.txt".to_string();
         let buffer = read_file_to_buffer(path);
@@ -190,6 +221,6 @@ mod tests {
             "Problem returned error: {}",
             result.unwrap_err()
         );
-        assert_eq!(result.unwrap(), "");
+        assert_eq!(result.unwrap(), "MCD");
     }
 }
