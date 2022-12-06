@@ -25,7 +25,7 @@ The input files have to follow the format: `dd.txt`. So the first of December wo
 - [x] ~~03.12.2022~~
 - [x] ~~04.12.2022~~
 - [x] ~~05.12.2022~~
-- [ ] 06.12.2022
+- [x] ~~06.12.2022~~
 - [ ] 07.12.2022
 - [ ] 08.12.2022
 - [ ] 09.12.2022
