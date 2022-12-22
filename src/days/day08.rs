@@ -6,11 +6,13 @@ use std::{
 
 // checkout fasterthanli.me
 // my solution is heavily influenced by their solution.
+// I learned quite some stuff and used their logic.
 // (https://fasterthanli.me/series/advent-of-code-2022/part-8)
 
 pub fn problem1(buffer: BufReader<File>) -> Result<String, String> {
     let forest = parse_forest(buffer).unwrap();
 
+    // learned: You can easily iterate over two ranges.
     let all_coords = (0..forest.height).into_iter().flat_map(|y| {
         (0..forest.width)
             .into_iter()
@@ -23,6 +25,9 @@ pub fn problem1(buffer: BufReader<File>) -> Result<String, String> {
         .filter(|coord| {
             let tree_height = forest.tree(coord).unwrap();
             directions.iter().any(|(dx, dy)| {
+                // learned: map_while is awesome!
+                // Mapping until there is an error, then stop without an error
+                // and return the mapped stuff.
                 let mut in_line = (1..).into_iter().map_while(|i| {
                     let to_check = Coord {
                         x: (coord.x as isize + (dx * i)) as usize,
